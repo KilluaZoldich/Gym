@@ -174,6 +174,9 @@ export default function GymApp() {
     
     const currentExercise = currentWorkout[currentExerciseIndex];
     
+    // Declare updatedWorkout outside try-catch to make it accessible
+    let updatedWorkout: typeof currentWorkout;
+    
     try {
       // Save the set to the database
       await workoutSetApi.create({
@@ -193,7 +196,7 @@ export default function GymApp() {
         completedAt: new Date().toISOString()
       };
 
-      const updatedWorkout = [...currentWorkout];
+      updatedWorkout = [...currentWorkout];
       updatedWorkout[currentExerciseIndex] = {
         ...currentExercise,
         sets: [...currentExercise.sets, newSet],
