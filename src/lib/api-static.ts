@@ -170,7 +170,7 @@ export const workoutPlanApi = {
     StaticStorage.add(STORAGE_KEYS.WORKOUT_PLANS, plan);
     
     // Create exercises
-    const exercises: WorkoutExercise[] = data.exercises.map(exerciseData => {
+    const exercises: WorkoutExercise[] = (data.exercises || []).map(exerciseData => {
       const exercise: WorkoutExercise = {
         id: uuidv4(),
         workoutPlanId: planId,
@@ -220,7 +220,7 @@ export const workoutPlanApi = {
     return workoutPlanApi.create({
       name: `${originalPlan.name} (Copia)`,
       description: originalPlan.description,
-      exercises: originalPlan.exercises.map(ex => ({
+      exercises: (originalPlan.exercises || []).map(ex => ({
         name: ex.name,
         description: ex.description,
         sets: ex.sets,

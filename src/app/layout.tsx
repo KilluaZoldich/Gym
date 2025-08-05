@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { paths } from "@/lib/path-utils";
+
+// Export viewport configuration separately to fix Next.js warning
+export { viewport } from './viewport';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,23 +45,17 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/Gym/icon.svg', type: 'image/svg+xml' },
-      { url: '/Gym/icon-192.png', sizes: '192x192', type: 'image/png' },
-      { url: '/Gym/icon-512.png', sizes: '512x512', type: 'image/png' },
+      { url: paths.icon.svg(), type: 'image/svg+xml' },
+      { url: paths.icon.png192(), sizes: '192x192', type: 'image/png' },
+      { url: paths.icon.png512(), sizes: '512x512', type: 'image/png' },
     ],
     apple: [
-      { url: '/Gym/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+      { url: paths.apple.touchIcon(), sizes: '180x180', type: 'image/png' },
     ],
-    shortcut: '/Gym/favicon.ico',
+    shortcut: paths.favicon(),
   },
-  manifest: '/Gym/manifest.json',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-    viewportFit: 'cover'
-  },
+  manifest: paths.manifest(),
+
 };
 
 export default function RootLayout({
@@ -75,8 +73,8 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-        <link rel="apple-touch-icon" href="/Gym/apple-touch-icon.png" />
-        <link rel="manifest" href="/Gym/manifest.json" />
+        <link rel="apple-touch-icon" href={paths.apple.touchIcon()} />
+        <link rel="manifest" href={paths.manifest()} />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}

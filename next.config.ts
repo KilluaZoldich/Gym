@@ -27,9 +27,6 @@ const nextConfig: NextConfig = {
   compress: true,
   
   // Disable server-side features for static export
-  experimental: {
-    esmExternals: false,
-  },
 };
 
 export default nextConfig;

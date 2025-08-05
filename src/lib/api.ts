@@ -135,14 +135,14 @@ export const workoutPlanApi = {
     return workoutPlanApi.create({
       name: `${originalPlan.name} (Copia)`,
       description: originalPlan.description,
-      exercises: originalPlan.exercises.map(ex => ({
+      exercises: originalPlan.exercises?.map(ex => ({
         name: ex.name,
         description: ex.description,
         sets: ex.sets,
         reps: ex.reps,
         restTime: ex.restTime,
         order: ex.order,
-      })),
+      })) || [],
     });
   },
 };

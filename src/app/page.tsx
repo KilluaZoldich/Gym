@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { Play, Plus, Clock, Dumbbell, CheckCircle, Timer, ArrowLeft, Edit, Trash2, X, Copy, Save, Sparkles, BarChart3, Calendar } from "lucide-react";
-import { workoutPlanApi, workoutApi, workoutSetApi, type WorkoutPlan, type WorkoutExercise, type Workout, type WorkoutSet, type ApiState, createInitialApiState, initializeSampleData } from "@/lib/api-static";
+import { workoutPlanApi, workoutApi, workoutSetApi, workoutExerciseApi, type WorkoutPlan, type WorkoutExercise, type Workout, type WorkoutSet, type ApiState, createInitialApiState, initializeSampleData } from "@/lib/api-static";
 
 // Local types for UI state
 interface WorkoutSetLocal {
@@ -147,12 +147,23 @@ export default function GymApp() {
   const startWorkout = async (plan: WorkoutPlan) => {
     try {
       setLoading(true);
+      
+      // Safety check: ensure plan has exercises
+      if (!plan.exercises || plan.exercises.length === 0) {
+        toast({ 
+          title: "Errore", 
+          description: "La scheda non contiene esercizi.", 
+          variant: "destructive" 
+        });
+        return;
+      }
+      
       // Start a new workout session in the database
       const workout = await workoutApi.start(plan.id);
       setActiveWorkout(workout);
       setSelectedPlan(plan);
       
-      const workoutProgress = plan.exercises.map(exercise => ({
+      const workoutProgress = (plan.exercises || []).map(exercise => ({
         exercise,
         sets: [],
         currentSet: 1,
@@ -213,7 +224,10 @@ export default function GymApp() {
 
     // Check if exercise is completed
     if (updatedWorkout[currentExerciseIndex].isCompleted) {
-      // Start rest timer
+      // Exercise completed, move to next exercise without rest
+      nextExercise();
+    } else {
+      // More sets remaining, start rest timer between sets
       setRestTime(currentExercise.exercise.restTime);
       setIsRestActive(true);
       setScreen("rest");
@@ -292,12 +306,12 @@ export default function GymApp() {
         reps: newExercise.reps,
         restTime: newExercise.restTime,
         workoutPlanId: planId,
-        order: plan.exercises.length + 1
+        order: (plan.exercises?.length || 0) + 1
       });
 
       setWorkoutPlans(prev => prev.map(p => 
         p.id === planId 
-          ? { ...p, exercises: [...p.exercises, exercise] }
+          ? { ...p, exercises: [...(p.exercises || []), exercise] }
           : p
       ));
 
@@ -398,7 +412,7 @@ export default function GymApp() {
     if (template) {
       setPlanName(template.name);
       setPlanDescription(template.description);
-      setExercises(template.exercises.map((ex, i) => ({ ...ex, order: i + 1 })));
+      setExercises((template.exercises || []).map((ex, i) => ({ ...ex, order: i + 1 })));
       setSelectedTemplate(templateKey);
       toast({ title: "Template applicato", description: `${template.name} caricato` });
     }
@@ -466,8 +480,9 @@ export default function GymApp() {
 
       // Add exercises to the duplicated plan
       const createdExercises = [];
-      for (let i = 0; i < plan.exercises.length; i++) {
-        const exercise = plan.exercises[i];
+      const planExercises = plan.exercises || [];
+      for (let i = 0; i < planExercises.length; i++) {
+        const exercise = planExercises[i];
         const createdExercise = await workoutExerciseApi.create({
           name: exercise.name,
           description: exercise.description,
@@ -523,7 +538,7 @@ export default function GymApp() {
                   <div>
                     <p className="text-gray-500 text-xs">Esercizi</p>
                     <p className="text-gray-900 text-xl font-light">
-                      {workoutPlans.reduce((sum, plan) => sum + plan.exercises.length, 0)}
+                      {workoutPlans.reduce((sum, plan) => sum + (plan.exercises?.length || 0), 0)}
                     </p>
                   </div>
                   <Dumbbell className="h-6 w-6 text-gray-400" />
@@ -597,11 +612,11 @@ export default function GymApp() {
                   </div>
 
                   {/* Exercises List */}
-                  {exercises.length > 0 && (
+                  {exercises && exercises.length > 0 && (
                     <div>
                       <Label className="text-gray-700 text-sm font-normal">Esercizi</Label>
                       <div className="space-y-2 mt-2 max-h-48 overflow-y-auto">
-                        {exercises.map((exercise, index) => (
+                        {exercises?.map((exercise, index) => (
                           <div key={index} className="bg-gray-50 p-3 rounded-lg border border-gray-200">
                             <div className="flex justify-between items-start">
                               <div className="flex-1 pr-2">
@@ -734,7 +749,7 @@ export default function GymApp() {
               </div>
             )}
             
-            {!plansState.loading && !plansState.error && workoutPlans.map(plan => (
+            {!plansState.loading && !plansState.error && Array.isArray(workoutPlans) && workoutPlans.map(plan => (
               <Card 
                 key={plan.id} 
                 className="border border-gray-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
@@ -754,12 +769,12 @@ export default function GymApp() {
                       <div className="flex items-center gap-4 mt-2">
                         <div className="flex items-center gap-1">
                           <Dumbbell className="h-4 w-4 text-gray-400" />
-                          <span className="text-xs text-gray-500">{plan.exercises.length} esercizi</span>
+                          <span className="text-xs text-gray-500">{plan.exercises?.length || 0} esercizi</span>
                         </div>
                         <div className="flex items-center gap-1">
                           <Clock className="h-4 w-4 text-gray-400" />
                           <span className="text-xs text-gray-500">
-                            {Math.round(plan.exercises.reduce((sum, ex) => sum + (ex.sets * (ex.reps * 2 + ex.restTime)), 0) / 60)} min
+                            {Math.round((plan.exercises?.reduce((sum, ex) => sum + (ex.sets * (ex.reps * 2 + ex.restTime)), 0) || 0) / 60)} min
                           </span>
                         </div>
                       </div>
@@ -796,7 +811,7 @@ export default function GymApp() {
                 </CardHeader>
                 <CardContent className="pt-0">
                   <div className="flex gap-2">
-                    {plan.exercises.slice(0, 5).map((exercise, index) => (
+                    {plan.exercises?.slice(0, 5).map((exercise, index) => (
                       <Badge 
                         key={exercise.id} 
                         variant="secondary" 
@@ -804,13 +819,13 @@ export default function GymApp() {
                       >
                         {exercise.name}
                       </Badge>
-                    ))}
-                    {plan.exercises.length > 5 && (
+                    )) || []}
+                    {(plan.exercises?.length || 0) > 5 && (
                       <Badge 
                         variant="secondary" 
                         className="text-xs bg-gray-100 text-gray-600 border border-gray-200"
                       >
-                        +{plan.exercises.length - 5}
+                        +{(plan.exercises?.length || 0) - 5}
                       </Badge>
                     )}
                   </div>
@@ -827,6 +842,17 @@ export default function GymApp() {
   if (screen === "workout") {
     const currentExercise = currentWorkout[currentExerciseIndex];
     const progress = calculateProgress();
+
+    // Safety check: if currentExercise is undefined, return to plans
+    if (!currentExercise || !currentExercise.exercise) {
+      toast({ 
+        title: "Errore", 
+        description: "Esercizio non trovato. Tornando alle schede.", 
+        variant: "destructive" 
+      });
+      setScreen("plans");
+      return null;
+    }
 
     return (
       <div className="min-h-screen bg-white safe-all smooth-scroll">
