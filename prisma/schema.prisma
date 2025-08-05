@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model WorkoutPlan {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  exercises   WorkoutExercise[]
+  workouts    Workout[]
+}
+
+model WorkoutExercise {
+  id           String   @id @default(cuid())
+  name         String
+  description  String?
+  sets         Int
+  reps         Int
+  restTime     Int      // in seconds
+  order        Int
+  workoutPlanId String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  workoutPlan  WorkoutPlan @relation(fields: [workoutPlanId], references: [id], onDelete: Cascade)
+  workoutSets  WorkoutSet[]
+}
+
+model Workout {
+  id           String   @id @default(cuid())
+  workoutPlanId String
+  startedAt    DateTime @default(now())
+  completedAt  DateTime?
+  notes        String?
+  
+  workoutPlan  WorkoutPlan @relation(fields: [workoutPlanId], references: [id], onDelete: Cascade)
+  sets         WorkoutSet[]
+}
+
+model WorkoutSet {
+  id              String   @id @default(cuid())
+  workoutId       String
+  workoutExerciseId String
+  setNumber       Int
+  weight          Float    // in kg
+  reps            Int
+  completedAt     DateTime @default(now())
+  
+  workout         Workout         @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  workoutExercise WorkoutExercise @relation(fields: [workoutExerciseId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

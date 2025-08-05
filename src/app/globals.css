@@ -1,0 +1,393 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* iPhone safe area support - Optimized for iPhone 16 Pro */
+.safe-top {
+  padding-top: max(env(safe-area-inset-top), 20px);
+}
+
+.safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom), 20px);
+}
+
+.safe-left {
+  padding-left: max(env(safe-area-inset-left), 16px);
+}
+
+.safe-right {
+  padding-right: max(env(safe-area-inset-right), 16px);
+}
+
+.safe-x {
+  padding-left: max(env(safe-area-inset-left), 16px);
+  padding-right: max(env(safe-area-inset-right), 16px);
+}
+
+.safe-y {
+  padding-top: max(env(safe-area-inset-top), 20px);
+  padding-bottom: max(env(safe-area-inset-bottom), 20px);
+}
+
+.safe-all {
+  padding-top: max(env(safe-area-inset-top), 20px);
+  padding-bottom: max(env(safe-area-inset-bottom), 20px);
+  padding-left: max(env(safe-area-inset-left), 16px);
+  padding-right: max(env(safe-area-inset-right), 16px);
+}
+
+/* iPhone 16 Pro specific optimizations */
+@supports (height: 100dvh) {
+  .min-h-screen {
+    min-height: 100dvh;
+  }
+  
+  .h-screen {
+    height: 100dvh;
+  }
+}
+
+/* Dynamic Island and Notch considerations */
+@media screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) {
+  .safe-top {
+    padding-top: max(env(safe-area-inset-top), 59px);
+  }
+}
+
+/* Landscape mode safe areas */
+@media screen and (orientation: landscape) {
+  .safe-left {
+    padding-left: max(env(safe-area-inset-left), 44px);
+  }
+  
+  .safe-right {
+    padding-right: max(env(safe-area-inset-right), 44px);
+  }
+  
+  .safe-x {
+    padding-left: max(env(safe-area-inset-left), 44px);
+    padding-right: max(env(safe-area-inset-right), 44px);
+  }
+}
+
+/* Custom scrollbar for mobile */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #E5E7EB;
+  border-radius: 2px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #D1D5DB;
+}
+
+/* iPhone 16 Pro optimized touch targets */
+.minimal-touch {
+  min-height: 48px;
+  min-width: 48px;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.touch-large {
+  min-height: 56px;
+  min-width: 56px;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.touch-xl {
+  min-height: 64px;
+  min-width: 64px;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* iPhone specific button spacing */
+.btn-spacing {
+  margin: 8px 0;
+}
+
+.btn-spacing-lg {
+  margin: 12px 0;
+}
+
+/* Smooth minimal animations */
+.minimal-transition {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Minimal card hover effects */
+.minimal-card-hover {
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.minimal-card-hover:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Minimal input styles */
+.minimal-input {
+  background-color: white;
+  border-color: #E5E7EB;
+  color: #1F2937;
+  transition: all 0.2s ease-in-out;
+}
+
+.minimal-input:focus {
+  border-color: #9CA3AF;
+  outline: none;
+  box-shadow: 0 0 0 1px #9CA3AF;
+}
+
+/* iPhone 16 Pro optimized button styles */
+.minimal-button {
+  min-height: 48px;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.2s ease-in-out;
+  user-select: none;
+  touch-action: manipulation;
+  transform: translateZ(0); /* Hardware acceleration */
+}
+
+.minimal-button:active {
+  transform: scale(0.98) translateZ(0);
+}
+
+/* iPhone responsive design optimizations */
+@media (max-width: 480px) {
+  .container {
+    padding-left: max(env(safe-area-inset-left), 16px);
+    padding-right: max(env(safe-area-inset-right), 16px);
+  }
+  
+  .text-responsive {
+    font-size: clamp(14px, 4vw, 18px);
+  }
+  
+  .heading-responsive {
+    font-size: clamp(20px, 6vw, 28px);
+  }
+  
+  /* Optimize card spacing for mobile */
+  .card-mobile {
+    margin-bottom: 12px;
+    padding: 16px;
+  }
+  
+  /* Optimize input fields for mobile */
+  .input-mobile {
+    min-height: 48px;
+    font-size: 16px;
+    padding: 12px 16px;
+  }
+}
+
+/* iPhone 16 Pro specific (393x852) */
+@media screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) {
+  .max-w-md {
+    max-width: 100%;
+    padding-left: max(env(safe-area-inset-left), 20px);
+    padding-right: max(env(safe-area-inset-right), 20px);
+  }
+  
+  .timer-circle {
+    width: 240px;
+    height: 240px;
+  }
+  
+  .exercise-card {
+    margin-bottom: 16px;
+  }
+}
+
+/* iPhone 16 Pro Max specific (430x932) */
+@media screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+  .max-w-md {
+    max-width: 400px;
+  }
+  
+  .timer-circle {
+    width: 280px;
+    height: 280px;
+  }
+}
+
+/* iPhone SE and smaller devices */
+@media screen and (max-width: 375px) {
+  .timer-circle {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .text-6xl {
+    font-size: 3rem;
+  }
+  
+  .grid-cols-3 {
+    gap: 8px;
+  }
+  
+  .card-mobile {
+    padding: 12px;
+  }
+}
+
+/* Prevent zoom on input focus */
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+  font-size: 16px;
+  -webkit-appearance: none;
+  border-radius: 8px;
+}
+
+/* Smooth scrolling for iOS */
+.smooth-scroll {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Pull-to-refresh prevention */
+body {
+  overscroll-behavior-y: contain;
+}
+
+/* iOS momentum scrolling */
+.momentum-scroll {
+  -webkit-overflow-scrolling: touch;
+  overflow-scrolling: touch;
+}
+
+.minimal-button:active {
+  transform: scale(0.98);
+}
